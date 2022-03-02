@@ -22,7 +22,7 @@ class TableAuthors extends Component {
 
   componentDidMount = async()=>{
     const response = await fetch (`http://localhost:4000/autores`);
-    const columns=await response.json()
+    const columns=await response.json();
     this.setState({
       data:columns.datos
     });
@@ -68,11 +68,10 @@ class TableAuthors extends Component {
                   <TableRow key={i}  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}> 
                     
                     <TableCell>{row.id}</TableCell>
-                    <TableCell>{row.nombre}</TableCell>
-                    {/*<TableCell>
-                      <TextField id="outlined-helperText" defaultValue={row.nombre}/>
+                    <TableCell>
+                      <TextField key={row.nombre} id="outlined-helperText" defaultValue={row.nombre}/>
                     </TableCell>
-                    */}
+                    
                     <TableCell>
                       <Stack spacing={2} direction="row">
                         <Button variant="contained" onClick={(e)=>this.editAuthor(row.id)}>Editar</Button>
