@@ -8,12 +8,52 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Stack } from "@mui/material";
+import TextField from '@mui/material/TextField';
 
 
-class Tableinformation extends Component {
+class TableAuthors extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      data:[{}]
+    }
+    this.deleteAuthor = this.deleteAuthor.bind(this);
+  }
+
+  componentDidMount = async()=>{
+    const response = await fetch (`http://localhost:4000/autores`);
+    const columns=await response.json()
+    this.setState({
+      data:columns.datos
+    });
+  }
+
+  editAuthor=(value)=>{
+    console.log("Editar: ",value);
+  }
+
+  deleteAuthor= async (value)=>{
+    console.log("Eliminar: ", value);
+
+    await fetch(`http://localhost:4000/autores/${value}`,{
+      method:'DELETE',
+      headers:{
+        'Content-Type':'application/json',
+        'Accept':'application/json'
+      },
+      cache:'no-cache'
+    }).then(async (result)=>{
+      result = await result.json();
+      this.setState({
+        data:result.datos
+      });
+    })
+
+  }
+
   render() {
     return (
-      <div>
+      <div> 
         <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table" >
               <TableHead>
@@ -24,16 +64,19 @@ class Tableinformation extends Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.props.data.map((row,i) => (
+                {this.state.data.map((row,i) => (
                   <TableRow key={i}  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}> 
                     
                     <TableCell>{row.id}</TableCell>
                     <TableCell>{row.nombre}</TableCell>
-
+                    {/*<TableCell>
+                      <TextField id="outlined-helperText" defaultValue={row.nombre}/>
+                    </TableCell>
+                    */}
                     <TableCell>
                       <Stack spacing={2} direction="row">
-                        <Button variant="contained">Editar</Button>
-                        <Button variant="contained">Eliminar</Button>  
+                        <Button variant="contained" onClick={(e)=>this.editAuthor(row.id)}>Editar</Button>
+                        <Button variant="contained" onClick={(e)=>this.deleteAuthor(row.id)}>Eliminar</Button>  
                       </Stack>
                     </TableCell>
                     
@@ -48,4 +91,4 @@ class Tableinformation extends Component {
   }
 }
 
-export default Tableinformation;
+export default TableAuthors;

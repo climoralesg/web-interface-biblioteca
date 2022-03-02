@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Tableinformation from "./table/Tableinformation";
+import TableAuthors from "./table/TableAuthors";
 
 
 
@@ -23,7 +23,7 @@ class Busqueda extends Component {
   render() {    
     return (
         <div>
-            <Tableinformation data={this.state.data}></Tableinformation>
+            <TableAuthors data={this.state.data}></TableAuthors>
         </div>
     );
   }
