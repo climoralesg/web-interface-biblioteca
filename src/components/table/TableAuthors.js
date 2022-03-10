@@ -38,18 +38,38 @@ class TableAuthors extends Component {
       modalEdit:false,
       form:{
         id:"",
-        nombre:"",
+        name:"",
       }
     }
     this.deleteAuthor = this.deleteAuthor.bind(this);
     this.editAuthor = this.editAuthor.bind(this);
     this.handleModalEdit = this.handleModalEdit.bind(this);
+
   }
 
+  componentDidMount = ()=>{
+    this.updateList();
+  }
+
+  updateList=async ()=>{
+    const response = await fetch (`http://localhost:4000/authors`);
+    const columns=await response.json();
+    this.setState({
+      data:columns.datos
+    });
+  }
+
+  handleChange=(e)=>{
+    this.setState({
+      form:{
+        ...this.state.form,
+        [e.target.name]: e.target.value
+      }
+    });
+  }
+
+
   handleModalEdit=(datos)=>{
-
-
-
     if(this.state.modalEdit===true){
       this.setState({
         modalEdit:false
@@ -60,39 +80,34 @@ class TableAuthors extends Component {
         form:datos
       });
     }
+  
   }
   
   
 
-  componentDidMount = async()=>{
-    const response = await fetch (`http://localhost:4000/autores`);
-    const columns=await response.json();
-    this.setState({
-      data:columns.datos
-    });
-  }
 
-  editAuthor = async(id,name)=>{
-
-    await fetch(`http://localhost:4000/autores/${id}`,{
+  editAuthor = async()=>{
+    await fetch(`http://localhost:4000/authors/${this.state.form.id}`,{
       method:'PUT',
       headers:{
         'Content-Type':'application/json',
         'Accept':'application/json'
       },
-      body:JSON.stringify({id:id,nombre:name}),
+      body:JSON.stringify({id:this.state.form.id,name:this.state.form.name}),
       cache:'no-cache'
     }).then(
       response=>response.json()
     ).then((response)=>{
-      console.log("Registrado", response)
-      console.log("Realizado")
-    })
-    
-  }
+      this.updateList();
+      this.setState({
+        modalEdit:false
+      });
 
+    }) 
+  }
+  
   deleteAuthor= async (value)=>{
-    await fetch(`http://localhost:4000/autores/${value}`,{
+    await fetch(`http://localhost:4000/authors/${value}`,{
       method:'DELETE',
       headers:{
         'Content-Type':'application/json',
@@ -105,7 +120,6 @@ class TableAuthors extends Component {
         data:result.datos
       });
     })
-
   }
 
   render() {
@@ -127,13 +141,13 @@ class TableAuthors extends Component {
                   <TableRow key={i}  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}> 
                     <TableCell key={row.id}>{row.id}</TableCell>
                     <TableCell>
-                      <TextField key={row.nombre} id="outlined-helperText" defaultValue={row.nombre} onChange={ (event) => this.changeName(event,row.id)} />
+                      <TextField key={row.name} id="outlined-helperText" defaultValue={row.name} onChange={ (event) => this.changeName(event,row.id)} />
                     </TableCell>
                     
                     <TableCell>
                       <Stack spacing={2} direction="row">
                         <Button variant="contained" onClick={(e)=>this.handleModalEdit(row)}>Actualizar</Button>
-                        {/*<Button variant="contained" onClick={(e)=>this.editAuthor(row.id,row.nombre)}>Actualizar</Button>*/}
+                        {/*<Button variant="contained" onClick={(e)=>this.editAuthor(row.id,row.name)}>Actualizar</Button>*/}
                         <Button variant="contained" onClick={(e)=>this.deleteAuthor(row.id)}>Eliminar</Button>  
                       </Stack>
                     </TableCell>
@@ -161,8 +175,8 @@ class TableAuthors extends Component {
                   Editar Autor
                 </Typography>
                 <FormGroup>
-                <TextField id="outlined-helperText" defaultValue={this.state.form.nombre}/>            
-                <Button variant="contained">Editar</Button>  
+                <TextField id="outlined-helperText" name="name" value={this.state.form.name} onChange={this.handleChange}/>            
+                <Button variant="contained" onClick={this.editAuthor}>Editar</Button>  
                 <Button variant="contained" onClick={this.handleModalEdit}>Cancelar</Button>
                 </FormGroup>
               </Box>
