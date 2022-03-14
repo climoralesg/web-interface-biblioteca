@@ -1,7 +1,6 @@
 import './style/main.css';
 
 //import './App.css';
-import Busqueda from './components/Busqueda';
 import TableAuthors from './components/table/TableAuthors';
 
 
