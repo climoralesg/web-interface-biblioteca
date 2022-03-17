@@ -1,0 +1,2 @@
+Module not found: Error: Can't resolve '@mui/icons-material/Mail' in '/home/claudio/Codigos/web-interface-biblioteca/src'
+Module not found: Error: Can't resolve '@mui/icons-material/MoveToInbox' in '/home/claudio/Codigos/web-interface-biblioteca/src'
