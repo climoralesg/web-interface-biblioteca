@@ -1,6 +1,8 @@
 import './style/main.css';
-import TableAuthors from './components/table/TableAuthors';
-
+import TableAuthors from './components/Authors/TableAuthors';
+import TableEditorials from './components/Editorials/TableEditorials';
+import TableCategories from './components/Categories/TableCategories';
+import TableBooks from './components/Books/TableBooks';
 
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -23,8 +25,24 @@ import * as ReactDOM from "react-dom";
 import { Routes,Route, BrowserRouter } from "react-router-dom";
 
 
-const drawerWidth = 240;
 
+const drawerWidth = 240;
+const routes=[{
+  name:'Autores',
+  href:'/autores'  
+},
+{
+  name:'categorias',
+  href:'/categorias'  
+},
+{
+  name:'Libros',
+  href:'/libros'  
+},
+{
+  name:'Editoriales',
+  href:'/editoriales'  
+}];
 
 function App() {
   return (
@@ -49,12 +67,12 @@ function App() {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            {['Autores', 'Categorias', 'Libros', 'Editoriales'].map((text, index) => (
-              <ListItem button key={text} component= {Link} href='/autores'>
+            {routes.map((text, index) => (
+              <ListItem button key={text.name} component= {Link} href={text.href}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={text.name} />
               </ListItem>
             ))}
           </List>
@@ -68,6 +86,16 @@ function App() {
               <Routes>
                 <Route path='/autores' element={<TableAuthors/>}>
                 </Route>
+
+                <Route path='/editoriales' element={<TableEditorials/>}>
+                </Route>
+
+                <Route path='/categorias' element={<TableCategories/>}>
+                </Route>
+
+                <Route path='/libros' element={<TableBooks/>}>
+                </Route>
+                
               </Routes>
             </BrowserRouter>
           </header>
