@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
@@ -8,6 +9,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Backdrop from '@mui/material/Backdrop';
@@ -18,16 +23,369 @@ import { Stack } from "@mui/material";
 import TextField from '@mui/material/TextField';
 
 
-class TableBooks extends Component{
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+  
 
+
+class TableBooks extends Component{
+    constructor(props){
+        super(props);
+        this.state={
+          data:[{}],
+          modalEdit:false,
+          modalCreate:false,
+          modalView:false,
+          form:{
+            isbn:"",
+            title:"",
+            edition:0,
+            numberPages:0,
+            idAuthor: 0,
+            idEditorial:0,
+            idCategory:0,
+
+          },
+          formCreate:{
+            title:"",
+            edition:0,
+            numberPages:0,
+            idAuthor: 0,
+            idEditorial:0,
+            idCategory:0,
+          },
+
+          formView:{
+            isbn:"",
+            title:"",
+            edition:0,
+            numberPages:0,
+            authorName: "",
+            editorialName:"",
+            categoryName:"",
+          }
+
+
+        }
+
+        this.deleteBook=this.deleteBook.bind(this);
+        this.createBook=this.createBook.bind(this);
+        this.editBook=this.editBook.bind(this);
+        this.handleModalEdit=this.handleModalEdit.bind(this);
+        this.handleModalCreate = this.handleModalCreate.bind(this);
+        this.handleModalView = this.handleModalView.bind(this);
+    }
+
+    componentDidMount = ()=>{
+        this.updateList();
+    }
+
+    createBook = async ()=>{
+        await fetch(`http://localhost:4000/books`,{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json'
+          },
+          body:JSON.stringify({title:this.state.formCreate.title,
+                                edition:this.state.formCreate.edition,
+                                numberPages:this.state.formCreate.numberPages,
+                                idAuthor:this.state.formCreate.idAuthor,
+                                idEditorial:this.state.formCreate.idEditorial,
+                                idCategory:this.state.formCreate.idCategory
+                            }),
+          cache:'no-cache'
+    
+        }).then(
+          response=>response.json()
+        ).then((response)=>{
+          this.updateList();
+          this.setState({
+            modalCreate:false
+          });
+        }) 
+        this.updateList();
+    }
+    
+    updateList=async ()=>{
+        const response = await fetch (`http://localhost:4000/books`);
+        const columns=await response.json();
+        this.setState({
+          data:columns.datos
+        });
+    }
+
+    /*REALIZAR CAMBIO */
+    handleChangeEdit=(e)=>{
+      this.setState({
+        form:{
+          ...this.state.form,
+          [e.target.title]: e.target.value
+        }
+      });
+    }
+
+
+    handleModalView= async(isbn)=>{
+      if(this.state.modalView===true){
+        this.setState({
+          modalView:false
+        });
+      }else{
+
+        const response = await fetch (`http://localhost:4000/books/${isbn}`);
+        const columns=await response.json();
+
+        await this.setState({
+          modalView:true,
+          formView:columns.datos
+        });
+      }
+    
+    }
+
+
+    handleModalEdit=(datos)=>{
+      if(this.state.modalEdit===true){
+        this.setState({
+          modalEdit:false
+        });
+      }else{
+        this.setState({
+          modalEdit:true,
+          form:datos
+        });
+      }
+    
+    }
+
+
+    handleModalCreate=()=>{
+      if(this.state.modalCreate===true){
+        this.setState({
+          modalCreate:false
+        });
+      }else{
+        this.setState({
+          modalCreate:true,
+        });
+      }
+    }
+
+
+    editBook = async()=>{
+        await fetch(`http://localhost:4000/books/${this.state.form.isbn}`,{
+          method:'PUT',
+          headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json'
+          },
+          body:JSON.stringify({isbn:this.state.form.isbn,
+            title:this.state.formCreate.title,
+            edition:this.state.formCreate.edition,
+            numberPages:this.state.formCreate.numberPages,
+            idAuthor:this.state.formCreate.idAuthor,
+            idEditorial:this.state.formCreate.idEditorial,
+            idCategory:this.state.formCreate.idCategory}),
+          cache:'no-cache'
+        }).then(
+          response=>response.json()
+        ).then((response)=>{
+          this.updateList();
+          this.setState({
+            modalEdit:false
+          });
+        }) 
+      }
+
+    deleteBook= async (value)=>{
+      await fetch(`http://localhost:4000/books/${value}`,{
+        method:'DELETE',
+        headers:{
+          'Content-Type':'application/json',
+          'Accept':'application/json'
+        },
+        cache:'no-cache'
+      }).then(async (result)=>{
+        result = await result.json();
+        this.setState({
+          data:result.datos
+        });
+      })
+    }
+    
+  
+
+    render(){
+        return(
+            <div> 
+            <Button variant="contained" onClick={(e)=>this.handleModalCreate()}>Agregar Libro</Button>  
+    
+            <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table" >
+                  
+              <TableHead>
+                
+                <TableRow>
+                  
+                  <TableCell>ISBN</TableCell>
+                  <TableCell align="left">Nombre</TableCell>
+                  <TableCell align="left">Acciones</TableCell>
+                
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.state.data.map((row,i) => (
+                  <TableRow key={i}  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}> 
+                    <TableCell key={row.isbn} component="th" scope="row">{row.isbn}</TableCell>
+                    <TableCell>{row.title}</TableCell>
+    
+                    <TableCell>
+                      <Stack spacing={2} direction="row">
+                        <Button variant="contained" onClick={(e)=>this.handleModalEdit(row)}>Actualizar</Button>
+                        <Button variant="contained" onClick={(e)=>this.handleModalView(row.isbn)}>Ver Información</Button>
+                        <Button variant="contained" onClick={(e)=>this.deleteBook(row.isbn)}>Eliminar</Button>  
+                      </Stack>
+                      </TableCell>
+                  </TableRow>
+                ))}                
+              </TableBody>
+            </Table>
+            </TableContainer>
+    
+            {/*START MODAL EDIT*/}
+            <Modal 
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={this.state.modalEdit}
+                onClose={this.handleModalEdit}
+                closeAfterTransition={true}
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}>
+    
+                <Fade in={this.state.modalEdit}>
+                  <Box sx={style}>
+                    <Typography id="transition-modal-title" variant="h6" component="h2">
+                      Editar Libro
+                    </Typography>
+                    <FormGroup>
+                    <TextField id="outlined-helperText" name="title" value={this.state.form.title} onChange={this.handleChangeEdit}/>            
+                    <TextField id="outlined-helperText" name="edition" value={this.state.form.edition} onChange={this.handleChangeEdit}/>            
+                    <TextField id="outlined-helperText" name="numberPages" value={this.state.form.numberPages} onChange={this.handleChangeEdit}/>
+                    <TextField id="outlined-helperText" name="idAuthor" value={this.state.form.idAuthor} onChange={this.handleChangeEdit}/>            
+                    <TextField id="outlined-helperText" name="idCategory" value={this.state.form.idCategory} onChange={this.handleChangeEdit}/>
+                    <TextField id="outlined-helperText" name="idEditorial" value={this.state.form.idEditorial} onChange={this.handleChangeEdit}/>            
+        
+                    <Button variant="contained" onClick={this.editBook}>Editar</Button>  
+                    <Button variant="contained" onClick={this.handleModalEdit}>Cancelar</Button>
+                    </FormGroup>
+                  </Box>
+                </Fade>
+              </Modal>
+              {/*END MODAL EDIT*/}
+    
+              {/*START MODAL CREATE*/}
+              <Modal 
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={this.state.modalCreate}
+                onClose={this.handleModalCreate}
+                closeAfterTransition={true}
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}>
+    
+                <Fade in={this.state.modalCreate}>
+                  <Box sx={style}>
+                    <Typography id="transition-modal-title" variant="h6" component="h2">
+                      Agregar Libro
+                    </Typography>
+                    <FormGroup>
+                    <TextField id="outlined-helperText" name="name" onChange={this.handleChangeCreate}/>            
+                    <Button variant="contained" onClick={this.createBook}>Crear</Button>                  
+                    </FormGroup>
+                  </Box>
+                </Fade>
+              </Modal>
+              {/*END MODAL CREATE*/}
+
+              
+              {/*START MODAL VIEW*/}
+              <Modal 
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={this.state.modalView}
+                onClose={this.handleModalView}
+                closeAfterTransition={true}
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}>
+    
+                <Fade in={this.state.modalView}>
+                  <Box sx={style}>
+                    <Typography id="transition-modal-title" variant="h6" component="h2">
+                      Información de {this.state.formView.title}
+                    </Typography>
+                    <FormGroup>
+                    <List>
+                      <ListItem disablePadding>
+                        <ListItemText>ISBN: {this.state.formView.isbn}</ListItemText>
+                     </ListItem>
+
+                     <ListItem disablePadding>
+                     <ListItemText>Titulo: {this.state.formView.title}</ListItemText>
+
+                     </ListItem>
+                     
+                     <ListItem disablePadding>
+                     <ListItemText>Numero de Paginas: {this.state.formView.numberPages}</ListItemText>
+
+                     </ListItem>
+                     
+                     <ListItem disablePadding>
+                     <ListItemText>Edicion: {this.state.formView.edition}</ListItemText>
+
+                     </ListItem>
+                     
+                      <ListItem disablePadding>
+                        <ListItemText>Autor: {this.state.formView.authorName}</ListItemText>
+                      </ListItem>
+                     
+                     <ListItem disablePadding>
+                      <ListItemText>Categoria: {this.state.formView.categoryName}</ListItemText>
+                     </ListItem>
+
+                     <ListItem disablePadding>
+                      <ListItemText>Editorial: {this.state.formView.editorialName}</ListItemText>
+                     </ListItem>
+
+                    </List>          
+                    <Button variant="contained" onClick={this.handleModalView}>Cerrar</Button>
+          
+                    </FormGroup>
+                  </Box>
+                </Fade>
+              </Modal>
+              {/*END MODAL VIEW*/}
 
 
     
-    render(){
-        return(
-            <div>
-            </div>
-        );
+    
+          </div>
+        )
     }
 }
 
