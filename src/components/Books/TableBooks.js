@@ -56,6 +56,7 @@ class TableBooks extends Component{
 
           },
           formCreate:{
+            isbn:"",
             title:"",
             edition:0,
             numberPages:0,
@@ -96,7 +97,8 @@ class TableBooks extends Component{
             'Content-Type':'application/json',
             'Accept':'application/json'
           },
-          body:JSON.stringify({title:this.state.formCreate.title,
+          body:JSON.stringify({isbn:this.state.formCreate.isbn,
+                                title:this.state.formCreate.title,
                                 edition:this.state.formCreate.edition,
                                 numberPages:this.state.formCreate.numberPages,
                                 idAuthor:this.state.formCreate.idAuthor,
@@ -129,11 +131,20 @@ class TableBooks extends Component{
       this.setState({
         form:{
           ...this.state.form,
-          [e.target.title]: e.target.value
+          [e.target.name]: e.target.value
         }
       });
     }
 
+
+    handleChangeCreate=(e)=>{
+      this.setState({
+        formCreate:{
+          ...this.state.formCreate,
+          [e.target.name]: e.target.value
+        }
+      });
+    }
 
     handleModalView= async(isbn)=>{
       if(this.state.modalView===true){
@@ -190,12 +201,12 @@ class TableBooks extends Component{
             'Accept':'application/json'
           },
           body:JSON.stringify({isbn:this.state.form.isbn,
-            title:this.state.formCreate.title,
-            edition:this.state.formCreate.edition,
-            numberPages:this.state.formCreate.numberPages,
-            idAuthor:this.state.formCreate.idAuthor,
-            idEditorial:this.state.formCreate.idEditorial,
-            idCategory:this.state.formCreate.idCategory}),
+            title:this.state.form.title,
+            edition:this.state.form.edition,
+            numberPages:this.state.form.numberPages,
+            idAuthor:this.state.form.idAuthor,
+            idEditorial:this.state.form.idEditorial,
+            idCategory:this.state.form.idCategory}),
           cache:'no-cache'
         }).then(
           response=>response.json()
@@ -313,7 +324,13 @@ class TableBooks extends Component{
                       Agregar Libro
                     </Typography>
                     <FormGroup>
-                    <TextField id="outlined-helperText" name="name" onChange={this.handleChangeCreate}/>            
+                    <TextField id="outlined-helperText" placeholder="ISBN" name="isbn" onChange={this.handleChangeCreate}/>   
+                    <TextField id="outlined-helperText" placeholder="Titulo" name="title" onChange={this.handleChangeCreate}/>    
+                    <TextField id="outlined-helperText" placeholder="Edicion" name="edition" onChange={this.handleChangeCreate}/>    
+                    <TextField id="outlined-helperText" placeholder="Numero de Paginas" name="numberPages" onChange={this.handleChangeCreate}/>    
+                    <TextField id="outlined-helperText" placeholder="Autor" name="idAuthor" onChange={this.handleChangeCreate}/>    
+                    <TextField id="outlined-helperText" placeholder="Editorial" name="idEditorial" onChange={this.handleChangeCreate}/>
+                    <TextField id="outlined-helperText" placeholder="Categoria" name="idCategory" onChange={this.handleChangeCreate}/>                          
                     <Button variant="contained" onClick={this.createBook}>Crear</Button>                  
                     </FormGroup>
                   </Box>

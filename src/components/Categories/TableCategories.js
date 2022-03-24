@@ -176,7 +176,7 @@ class TableCategories extends Component {
   render() {
     return (
       <div> 
-        <Button variant="contained" onClick={(e)=>this.handleModalCreate()}>Agregar Autor</Button>  
+        <Button variant="contained" onClick={(e)=>this.handleModalCreate()}>Agregar Categoria</Button>  
 
         <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table" >
@@ -199,7 +199,7 @@ class TableCategories extends Component {
 
                 <TableCell>
                   <Stack spacing={2} direction="row">
-                    <Button variant="contained" onClick={(e)=>this.handleModalEdit(row)}>Actualizar</Button>
+                    <Button variant="contained" onClick={(e)=>this.handleModalEdit(row)}>Editar</Button>
                     <Button variant="contained" onClick={(e)=>this.deleteCategory(row.id)}>Eliminar</Button>  
                   </Stack>
                   </TableCell>
@@ -224,7 +224,7 @@ class TableCategories extends Component {
             <Fade in={this.state.modalEdit}>
               <Box sx={style}>
                 <Typography id="transition-modal-title" variant="h6" component="h2">
-                  Editar Autor
+                  Editar Categoria
                 </Typography>
                 <FormGroup>
                 <TextField id="outlined-helperText" name="name" value={this.state.form.name} onChange={this.handleChangeEdit}/>            
@@ -251,10 +251,10 @@ class TableCategories extends Component {
             <Fade in={this.state.modalCreate}>
               <Box sx={style}>
                 <Typography id="transition-modal-title" variant="h6" component="h2">
-                  Agregar Autor
+                  Agregar Categoria
                 </Typography>
                 <FormGroup>
-                <TextField id="outlined-helperText" name="name" onChange={this.handleChangeCreate}/>            
+                <TextField id="outlined-helperText" name="name" placeholder="Nombre" onChange={this.handleChangeCreate}/>            
                 <Button variant="contained" onClick={this.createCategory}>Crear</Button>                  
                 </FormGroup>
               </Box>

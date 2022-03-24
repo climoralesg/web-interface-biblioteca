@@ -195,11 +195,11 @@ class TableAuthors extends Component {
             {this.state.data.map((row,i) => (
               <TableRow key={i}  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}> 
                 <TableCell key={row.id} component="th" scope="row">{row.id}</TableCell>
-                <TableCell>{row.name}</TableCell>
+                <TableCell >{row.name}</TableCell>
 
                 <TableCell>
                   <Stack spacing={2} direction="row">
-                    <Button variant="contained" onClick={(e)=>this.handleModalEdit(row)}>Actualizar</Button>
+                    <Button variant="contained" onClick={(e)=>this.handleModalEdit(row)}>Editar</Button>
                     <Button variant="contained" onClick={(e)=>this.deleteAuthor(row.id)}>Eliminar</Button>  
                   </Stack>
                   </TableCell>
@@ -227,7 +227,7 @@ class TableAuthors extends Component {
                   Editar Autor
                 </Typography>
                 <FormGroup>
-                <TextField id="outlined-helperText" name="name" value={this.state.form.name} onChange={this.handleChangeEdit}/>            
+                <TextField id="outlined-helperText" name="name" placeholder="Nombre" value={this.state.form.name} onChange={this.handleChangeEdit}/>            
                 <Button variant="contained" onClick={this.editAuthor}>Editar</Button>  
                 <Button variant="contained" onClick={this.handleModalEdit}>Cancelar</Button>
                 </FormGroup>
@@ -254,7 +254,7 @@ class TableAuthors extends Component {
                   Agregar Autor
                 </Typography>
                 <FormGroup>
-                <TextField id="outlined-helperText" name="name" onChange={this.handleChangeCreate}/>            
+                <TextField id="outlined-helperText" name="name" placeholder="Nombre" onChange={this.handleChangeCreate}/>            
                 <Button variant="contained" onClick={this.createAuthor}>Crear</Button>                  
                 </FormGroup>
               </Box>

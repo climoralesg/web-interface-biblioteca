@@ -32,7 +32,7 @@ const routes=[{
   href:'/autores'  
 },
 {
-  name:'categorias',
+  name:'Categorias',
   href:'/categorias'  
 },
 {
