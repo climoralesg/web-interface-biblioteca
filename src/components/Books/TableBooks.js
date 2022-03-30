@@ -42,7 +42,7 @@ class TableBooks extends Component{
     constructor(props){
         super(props);
         this.state={
-          
+
           data:[{}],
           modalEdit:false,
           modalCreate:false,
@@ -52,9 +52,9 @@ class TableBooks extends Component{
             title:"",
             edition:0,
             numberPages:0,
-            idAuthor: 0,
-            idEditorial:0,
-            idCategory:0,
+            idAuthor: '',
+            idEditorial:'',
+            idCategory:'',
 
           },
           formCreate:{
@@ -176,6 +176,9 @@ class TableBooks extends Component{
           modalEdit:false
         });
       }else{
+        this.updateListAuthors();
+        this.updateListEditorials();
+        this.updateListCategories();
         this.setState({
           modalEdit:true,
           form:datos
@@ -331,9 +334,82 @@ class TableBooks extends Component{
                     <TextField id="outlined-helperText" name="edition" value={this.state.form.edition} onChange={this.handleChangeEdit}/>            
                     <TextField id="outlined-helperText" name="numberPages" value={this.state.form.numberPages} onChange={this.handleChangeEdit}/>
 
-                    <TextField id="outlined-helperText" name="idAuthor" value={this.state.form.idAuthor} onChange={this.handleChangeEdit}/>            
-                    <TextField id="outlined-helperText" name="idCategory" value={this.state.form.idCategory} onChange={this.handleChangeEdit}/>
-                    <TextField id="outlined-helperText" name="idEditorial" value={this.state.form.idEditorial} onChange={this.handleChangeEdit}/>            
+                    {/* <TextField id="outlined-helperText" name="idAuthor" value={this.state.form.idAuthor} onChange={this.handleChangeEdit}/>             */}
+                    {/* <TextField id="outlined-helperText" name="idCategory" value={this.state.form.idCategory} onChange={this.handleChangeEdit}/> */}
+                    {/* <TextField id="outlined-helperText" name="idEditorial" value={this.state.form.idEditorial} onChange={this.handleChangeEdit}/>   */}
+
+
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="demo-simple-select-helper-label">Autor</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-helper-label"
+                        id="selectAuthor"
+                        value={this.state.form.idAuthor}
+                        label="Autor"
+                        name="idAuthor"
+                        onChange={this.handleChangeEdit}
+                      >
+
+                        <MenuItem value="" disabled >
+                          <em>Autor</em>
+                        </MenuItem>
+
+                        {this.state.authors.map((author,i) => (
+                          <MenuItem value={author.id} key={i} >{author.name}</MenuItem>
+                        ))}
+
+                 
+                      </Select>
+                    </FormControl>
+
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="demo-simple-select-helper-label">Editorial</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-helper-label"
+                        id="selectEditorial"
+                        value={this.state.form.idEditorial}
+                        label="Editorial"
+                        name="idEditorial"
+                        onChange={this.handleChangeEdit}
+                      >
+
+                        <MenuItem value="" disabled >
+                          <em>Editorial</em>
+                        </MenuItem>
+
+                        {this.state.editorials.map((editorial,i) => (
+                          <MenuItem value={editorial.id} key={i} >{editorial.name}</MenuItem>
+                        ))}
+
+                 
+                      </Select>
+                    </FormControl>
+
+
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="demo-simple-select-helper-label">Categoria</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-helper-label"
+                        id="selectCategory"
+                        value={this.state.form.idCategory}
+                        label="Categoria"
+                        name="idCategory"
+                        onChange={this.handleChangeEdit}
+                      >
+
+                        <MenuItem value="" disabled >
+                          <em>Categoria</em>
+                        </MenuItem>
+
+                        {this.state.categories.map((category,i) => (
+                          <MenuItem value={category.id} key={i} >{category.name}</MenuItem>
+                        ))}
+
+                 
+                      </Select>
+                    </FormControl>
+
+
         
                     <Button variant="contained" onClick={this.editBook}>Editar</Button>  
                     <Button variant="contained" onClick={this.handleModalEdit}>Cancelar</Button>
