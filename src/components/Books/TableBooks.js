@@ -8,10 +8,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
@@ -21,7 +19,10 @@ import FormGroup from '@mui/material/FormGroup';
 import Typography from '@mui/material/Typography';
 import { Stack } from "@mui/material";
 import TextField from '@mui/material/TextField';
-
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const style = {
     position: 'absolute',
@@ -41,6 +42,7 @@ class TableBooks extends Component{
     constructor(props){
         super(props);
         this.state={
+          
           data:[{}],
           modalEdit:false,
           modalCreate:false,
@@ -60,9 +62,9 @@ class TableBooks extends Component{
             title:"",
             edition:0,
             numberPages:0,
-            idAuthor: 0,
-            idEditorial:0,
-            idCategory:0,
+            idAuthor: '',
+            idEditorial:'',
+            idCategory:'',
           },
 
           formView:{
@@ -73,8 +75,11 @@ class TableBooks extends Component{
             authorName: "",
             editorialName:"",
             categoryName:"",
-          }
+          },
 
+          authors:[{}],
+          categories:[{}],
+          editorials:[{}]
 
         }
 
@@ -118,7 +123,7 @@ class TableBooks extends Component{
         this.updateList();
     }
     
-    updateList=async ()=>{
+    updateList=async()=>{
         const response = await fetch (`http://localhost:4000/books`);
         const columns=await response.json();
         this.setState({
@@ -186,12 +191,40 @@ class TableBooks extends Component{
           modalCreate:false
         });
       }else{
+        this.updateListAuthors();
+        this.updateListEditorials();
+        this.updateListCategories();
         this.setState({
+         
           modalCreate:true,
+        
         });
       }
     }
 
+    updateListAuthors=async()=>{
+       const response = await fetch (`http://localhost:4000/authors`);
+      const columns=await response.json();
+      this.setState({
+        authors:columns.datos
+      });
+    }
+
+    updateListEditorials=async()=>{
+      const response = await fetch (`http://localhost:4000/editorials`);
+      const columns=await response.json();
+      this.setState({
+        editorials:columns.datos
+      });
+    }
+
+    updateListCategories=async()=>{
+      const response = await fetch (`http://localhost:4000/categories`);
+      const columns=await response.json();
+      this.setState({
+        categories:columns.datos
+      });
+    }
 
     editBook = async()=>{
         await fetch(`http://localhost:4000/books/${this.state.form.isbn}`,{
@@ -239,6 +272,9 @@ class TableBooks extends Component{
     render(){
         return(
             <div> 
+
+     
+
             <Button variant="contained" onClick={(e)=>this.handleModalCreate()}>Agregar Libro</Button>  
     
             <TableContainer component={Paper}>
@@ -262,7 +298,7 @@ class TableBooks extends Component{
     
                     <TableCell>
                       <Stack spacing={2} direction="row">
-                        <Button variant="contained" onClick={(e)=>this.handleModalEdit(row)}>Actualizar</Button>
+                        <Button variant="contained" onClick={(e)=>this.handleModalEdit(row)}>Editar</Button>
                         <Button variant="contained" onClick={(e)=>this.handleModalView(row.isbn)}>Ver Información</Button>
                         <Button variant="contained" onClick={(e)=>this.deleteBook(row.isbn)}>Eliminar</Button>  
                       </Stack>
@@ -294,6 +330,7 @@ class TableBooks extends Component{
                     <TextField id="outlined-helperText" name="title" value={this.state.form.title} onChange={this.handleChangeEdit}/>            
                     <TextField id="outlined-helperText" name="edition" value={this.state.form.edition} onChange={this.handleChangeEdit}/>            
                     <TextField id="outlined-helperText" name="numberPages" value={this.state.form.numberPages} onChange={this.handleChangeEdit}/>
+
                     <TextField id="outlined-helperText" name="idAuthor" value={this.state.form.idAuthor} onChange={this.handleChangeEdit}/>            
                     <TextField id="outlined-helperText" name="idCategory" value={this.state.form.idCategory} onChange={this.handleChangeEdit}/>
                     <TextField id="outlined-helperText" name="idEditorial" value={this.state.form.idEditorial} onChange={this.handleChangeEdit}/>            
@@ -328,11 +365,83 @@ class TableBooks extends Component{
                     <TextField id="outlined-helperText" placeholder="Titulo" name="title" onChange={this.handleChangeCreate}/>    
                     <TextField id="outlined-helperText" placeholder="Edicion" name="edition" onChange={this.handleChangeCreate}/>    
                     <TextField id="outlined-helperText" placeholder="Numero de Paginas" name="numberPages" onChange={this.handleChangeCreate}/>    
-                    <TextField id="outlined-helperText" placeholder="Autor" name="idAuthor" onChange={this.handleChangeCreate}/>    
-                    <TextField id="outlined-helperText" placeholder="Editorial" name="idEditorial" onChange={this.handleChangeCreate}/>
-                    <TextField id="outlined-helperText" placeholder="Categoria" name="idCategory" onChange={this.handleChangeCreate}/>                          
+                    {/*<TextField id="outlined-helperText" placeholder="Autor" name="idAuthor" onChange={this.handleChangeCreate}/>*/}    
+                    {/* <TextField id="outlined-helperText" placeholder="Editorial" name="idEditorial" onChange={this.handleChangeCreate}/> */}
+                    {/* <TextField id="outlined-helperText" placeholder="Categoria" name="idCategory" onChange={this.handleChangeCreate}/> */}
+
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="demo-simple-select-helper-label">Autor</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-helper-label"
+                        id="selectAuthor"
+                        value={this.state.formCreate.idAuthor}
+                        label="Autor"
+                        name="idAuthor"
+                        onChange={this.handleChangeCreate}
+                      >
+
+                        <MenuItem value="" disabled >
+                          <em>Autor</em>
+                        </MenuItem>
+
+                        {this.state.authors.map((author,i) => (
+                          <MenuItem value={author.id} key={i} >{author.name}</MenuItem>
+                        ))}
+
+                 
+                      </Select>
+                    </FormControl>
+
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="demo-simple-select-helper-label">Editorial</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-helper-label"
+                        id="selectEditorial"
+                        value={this.state.formCreate.idEditorial}
+                        label="Editorial"
+                        name="idEditorial"
+                        onChange={this.handleChangeCreate}
+                      >
+
+                        <MenuItem value="" disabled >
+                          <em>Editorial</em>
+                        </MenuItem>
+
+                        {this.state.editorials.map((editorial,i) => (
+                          <MenuItem value={editorial.id} key={i} >{editorial.name}</MenuItem>
+                        ))}
+
+                 
+                      </Select>
+                    </FormControl>
+
+
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="demo-simple-select-helper-label">Categoria</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-helper-label"
+                        id="selectCategory"
+                        value={this.state.formCreate.idCategory}
+                        label="Categoria"
+                        name="idCategory"
+                        onChange={this.handleChangeCreate}
+                      >
+
+                        <MenuItem value="" disabled >
+                          <em>Categoria</em>
+                        </MenuItem>
+
+                        {this.state.categories.map((category,i) => (
+                          <MenuItem value={category.id} key={i} >{category.name}</MenuItem>
+                        ))}
+
+                 
+                      </Select>
+                    </FormControl>
+
                     <Button variant="contained" onClick={this.createBook}>Crear</Button>                  
                     </FormGroup>
+
                   </Box>
                 </Fade>
               </Modal>

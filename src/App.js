@@ -16,9 +16,12 @@ import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import Link from '@mui/material/Link';
+import GroupIcon from '@mui/icons-material/Group';
+import ClassIcon from '@mui/icons-material/Class';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+
 
 
 import * as ReactDOM from "react-dom";
@@ -27,21 +30,29 @@ import { Routes,Route, BrowserRouter } from "react-router-dom";
 
 
 const drawerWidth = 240;
-const routes=[{
+let routes=[{
   name:'Autores',
-  href:'/autores'  
+  href:'/autores',
+  element:<TableAuthors/>,
+  icon:<GroupIcon/>  
 },
 {
   name:'Categorias',
-  href:'/categorias'  
+  href:'/categorias',  
+  element:<TableCategories/>,
+  icon:<ClassIcon/>   
 },
 {
   name:'Libros',
-  href:'/libros'  
+  href:'/libros',
+  element:<TableBooks/> ,
+  icon:<LibraryBooksIcon/>  
 },
 {
   name:'Editoriales',
-  href:'/editoriales'  
+  href:'/editoriales',
+  element:<TableEditorials/>,
+  icon:<BorderColorIcon/>   
 }];
 
 function App() {
@@ -70,7 +81,7 @@ function App() {
             {routes.map((text, index) => (
               <ListItem button key={text.name} component= {Link} href={text.href}>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {text.icon}
                 </ListItemIcon>
                 <ListItemText primary={text.name} />
               </ListItem>
@@ -84,18 +95,11 @@ function App() {
           <header className="App-header">
             <BrowserRouter>
               <Routes>
-                <Route path='/autores' element={<TableAuthors/>}>
-                </Route>
 
-                <Route path='/editoriales' element={<TableEditorials/>}>
-                </Route>
-
-                <Route path='/categorias' element={<TableCategories/>}>
-                </Route>
-
-                <Route path='/libros' element={<TableBooks/>}>
-                </Route>
-                
+                {routes.map((route,index)=>(
+                  <Route key={index} path={route.href} element={route.element} ></Route>
+                ))}
+          
               </Routes>
             </BrowserRouter>
           </header>
