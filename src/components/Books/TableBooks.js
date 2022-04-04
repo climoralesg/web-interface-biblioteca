@@ -96,7 +96,8 @@ class TableBooks extends Component{
     }
 
     createBook = async ()=>{
-        await fetch(`http://localhost:4000/books`,{
+        const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/books";
+        await fetch(`${baseURL}`,{
           method:'POST',
           headers:{
             'Content-Type':'application/json',
@@ -124,11 +125,12 @@ class TableBooks extends Component{
     }
     
     updateList=async()=>{
-        const response = await fetch (`http://localhost:4000/books`);
-        const columns=await response.json();
-        this.setState({
-          data:columns.datos
-        });
+      const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/books";
+      const response = await fetch (`${baseURL}`);
+      const columns=await response.json();
+      this.setState({
+        data:columns.datos
+      });
     }
 
     /*REALIZAR CAMBIO */
@@ -157,8 +159,8 @@ class TableBooks extends Component{
           modalView:false
         });
       }else{
-
-        const response = await fetch (`http://localhost:4000/books/${isbn}`);
+        const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/books";
+        const response = await fetch (`${baseURL}/${isbn}`);
         const columns=await response.json();
 
         await this.setState({
@@ -206,7 +208,8 @@ class TableBooks extends Component{
     }
 
     updateListAuthors=async()=>{
-       const response = await fetch (`http://localhost:4000/authors`);
+      const baseUrlAuthors=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/authors";
+       const response = await fetch (`${baseUrlAuthors}`);
       const columns=await response.json();
       this.setState({
         authors:columns.datos
@@ -214,7 +217,9 @@ class TableBooks extends Component{
     }
 
     updateListEditorials=async()=>{
-      const response = await fetch (`http://localhost:4000/editorials`);
+      const baseUrlEditorials=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/editorials";
+
+      const response = await fetch (`${baseUrlEditorials}`);
       const columns=await response.json();
       this.setState({
         editorials:columns.datos
@@ -222,7 +227,9 @@ class TableBooks extends Component{
     }
 
     updateListCategories=async()=>{
-      const response = await fetch (`http://localhost:4000/categories`);
+      const baseUrlCategories=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/categories";
+
+      const response = await fetch (`${baseUrlCategories}`);
       const columns=await response.json();
       this.setState({
         categories:columns.datos
@@ -230,7 +237,9 @@ class TableBooks extends Component{
     }
 
     editBook = async()=>{
-        await fetch(`http://localhost:4000/books/${this.state.form.isbn}`,{
+        const baseUrl=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/books";
+
+        await fetch(`${baseUrl}/${this.state.form.isbn}`,{
           method:'PUT',
           headers:{
             'Content-Type':'application/json',
@@ -255,7 +264,8 @@ class TableBooks extends Component{
       }
 
     deleteBook= async (value)=>{
-      await fetch(`http://localhost:4000/books/${value}`,{
+      const baseUrl=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/books";
+      await fetch(`${baseUrl}/${value}`,{
         method:'DELETE',
         headers:{
           'Content-Type':'application/json',
@@ -270,8 +280,6 @@ class TableBooks extends Component{
       })
     }
     
-  
-
     render(){
         return(
             <div> 

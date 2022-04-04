@@ -59,7 +59,8 @@ class TableEditorials extends Component{
       }
     
       createeditorial = async ()=>{
-        await fetch(`http://localhost:4000/editorials`,{
+        const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/editorials";
+        await fetch(`${baseURL}`,{
           method:'POST',
           headers:{
             'Content-Type':'application/json',
@@ -83,7 +84,9 @@ class TableEditorials extends Component{
       }
     
       updateList=async ()=>{
-        const response = await fetch (`http://localhost:4000/editorials`);
+        const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/editorials";
+        const response = await fetch (`${baseURL}`);
+
         const columns=await response.json();
         this.setState({
           data:columns.datos
@@ -139,7 +142,8 @@ class TableEditorials extends Component{
     
     
       editeditorial = async()=>{
-        await fetch(`http://localhost:4000/editorials/${this.state.form.id}`,{
+        const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/editorials";
+        await fetch(`${baseURL}/${this.state.form.id}`,{
           method:'PUT',
           headers:{
             'Content-Type':'application/json',
@@ -158,7 +162,8 @@ class TableEditorials extends Component{
       }
       
       deleteeditorial= async (value)=>{
-        await fetch(`http://localhost:4000/editorials/${value}`,{
+        const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/editorials";
+        await fetch(`${baseURL}/${value}`,{
           method:'DELETE',
           headers:{
             'Content-Type':'application/json',

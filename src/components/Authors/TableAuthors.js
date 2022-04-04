@@ -59,7 +59,8 @@ class TableAuthors extends Component {
   }
 
   createAuthor = async ()=>{
-    await fetch(`http://localhost:4000/authors`,{
+    const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/authors";
+    await fetch(`${baseURL}`,{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
@@ -76,14 +77,13 @@ class TableAuthors extends Component {
         modalCreate:false
       });
     }) 
-    
-    
-    
     this.updateList();
   }
 
   updateList=async ()=>{
-    const response = await fetch (`http://localhost:4000/authors`);
+    const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/authors";
+
+    const response = await fetch (`${baseURL}`);
     const columns=await response.json();
     this.setState({
       data:columns.datos
@@ -139,7 +139,9 @@ class TableAuthors extends Component {
 
 
   editAuthor = async()=>{
-    await fetch(`http://localhost:4000/authors/${this.state.form.id}`,{
+    const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/authors";
+
+    await fetch(`${baseURL}/${this.state.form.id}`,{
       method:'PUT',
       headers:{
         'Content-Type':'application/json',
@@ -158,7 +160,8 @@ class TableAuthors extends Component {
   }
   
   deleteAuthor= async (value)=>{
-    await fetch(`http://localhost:4000/authors/${value}`,{
+    const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/authors";
+    await fetch(`${baseURL}/${value}`,{
       method:'DELETE',
       headers:{
         'Content-Type':'application/json',
