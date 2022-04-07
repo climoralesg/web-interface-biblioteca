@@ -59,7 +59,8 @@ class TableCategories extends Component {
   }
 
   createCategory = async ()=>{
-    await fetch(`http://localhost:4000/categories`,{
+    const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/categories";
+    await fetch(`${baseURL}`,{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
@@ -83,7 +84,8 @@ class TableCategories extends Component {
   }
 
   updateList=async ()=>{
-    const response = await fetch (`http://localhost:4000/categories`);
+    const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/categories";
+    const response = await fetch (`${baseURL}`);
     const columns=await response.json();
     this.setState({
       data:columns.datos
@@ -139,7 +141,8 @@ class TableCategories extends Component {
 
 
   editCategory = async()=>{
-    await fetch(`http://localhost:4000/categories/${this.state.form.id}`,{
+    const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/categories";
+    await fetch(`${baseURL}/${this.state.form.id}`,{
       method:'PUT',
       headers:{
         'Content-Type':'application/json',
@@ -158,7 +161,8 @@ class TableCategories extends Component {
   }
   
   deleteCategory= async (value)=>{
-    await fetch(`http://localhost:4000/categories/${value}`,{
+    const baseURL=process.env.REACT_APP_URL_API+":"+process.env.REACT_APP_PORT_API+"/categories";
+    await fetch(`${baseURL}/${value}`,{
       method:'DELETE',
       headers:{
         'Content-Type':'application/json',
